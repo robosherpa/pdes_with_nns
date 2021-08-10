@@ -122,6 +122,7 @@ University of Notre Dame\\ % Your institution for the title page
 \medskip
 \textit{ngeneva@nd.edu} % Your email address
 \textit{nzabaras@nd.edu}
+\footnote{Code available at: \href{https://github.com/cics-nd/ar-pde-cnn}{https://github.com/cics-nd/ar-pde-cnn}.}
 }
 
 
@@ -146,9 +147,9 @@ University of Notre Dame\\ % Your institution for the title page
 \section{Introduction} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
 %------------------------------------------------
 
-\subsection{Claims} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
+%\subsection{Claims} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
 \begin{frame}
-\frametitle{Claims}
+\frametitle{Overview}
 \begin{itemize}
 \item An AutoRegressive
 \item Dense Encoder-Decoder
@@ -213,6 +214,7 @@ We are interested in surrogate models of non-linear dynamical systems in a space
 \end{frame}
 
 \subsection{Surrogate Modeling of Dynamical Systems}
+
 \begin{frame}
 \frametitle{Deterministic Surrogate Model}
 
@@ -233,6 +235,9 @@ For a transient PDE system with specified boundary conditions, as in~\Eqref{eq:g
 \end{frame}
 
 \section{Auto-regressive Dense Encoder-Decoder}
+
+\subsection{AR-DenseED}
+
 
 \begin{frame}
 \frametitle{AR-DenseED Schematic}
@@ -274,6 +279,7 @@ For a transient PDE system with specified boundary conditions, as in~\Eqref{eq:g
 
 \end{frame}
 
+\subsection{Bayesian AR-DenseED}
 
 \begin{frame}
 \frametitle{Bayesian AR-DenseED - Motivation}
@@ -430,12 +436,13 @@ where the additive output noise is not present due to its zero-mean Gaussian den
 \begin{frame}
 \frametitle{Predictive Statistics}
 The predictive conditional covariance can also be obtained in a similar fashion:
-\begin{align}
-&    \textrm{Cov}\left[\hat{\bm{u}}^{*}|\bm{\chi}^{*},\mathcal{S}\right] &= \mathbb{E}_{p\left(\bm{\theta}|\mathcal{S}\right)}
+\begin{align*}
+   &\textrm{Cov}\left[\hat{\bm{u}}^{*}|\bm{\chi}^{*},\mathcal{S}\right]\\
+    &= \mathbb{E}_{p\left(\bm{\theta}|\mathcal{S}\right)}
     \left[\textrm{Cov}\left(\hat{\bm{u}}^{*}|\bm{\chi}^{*},\textbf{w},\beta\right)\right] + \textrm{Cov}_{p(\bm{\theta}|\mathcal{S})}\left(\mathbb{E}\left[\hat{\bm{u}}^{*}|\bm{\chi}^{*},\textbf{w},\beta\right]\right),  \nonumber \\
     &= \mathbb{E}_{p(ln(\beta)|\mathcal{S})}\left[\beta^{-1}\bm{I}\right] + \textrm{Cov}_{p(\textbf{w}|\mathcal{S})}\left(f\left(\bm{\chi}^{*},\textbf{w}\right)\right),  \nonumber \\
     &\approx \frac{1}{P}\sum_{i=1}^{P}\left[\beta^{-1}_{i}\bm{I}+f\left(\bm{\chi}^{*},\textbf{w}_{i}\right)f\left(\bm{\chi}^{*},\textbf{w}_{i}\right)^{T}\right]- \mathbb{E}\left[\hat{\bm{u}}^{*}|\bm{\chi}^{*},\mathcal{S}\right]\mathbb{E}\left[\hat{\bm{u}}^{*}|\bm{\chi}^{*},\mathcal{S}\right]^{T},
-\end{align}
+\end{align*}
 where $\mathbb{E}\left[\bm{u}^{*}|\bm{\chi}^{*},\mathcal{S}\right]$ has been defined in~\Eqref{eq:predictive-mean}.
 To predict an entire time series, each model is sampled at the first time-step and  auto-regressed forward in time independently.
 Each set of parameters sampled from the posterior can be interpreted as an individual particle that is propagated forward in time.
@@ -499,6 +506,7 @@ where,
 
 \end{itemize}
 \end{frame}
+\subsection{AR-DenseED Deterministic Predictions}
 
 \begin{frame}
 \frametitle{AR-DenseED Deterministic Predictions}
@@ -521,7 +529,7 @@ where $N$, $u$ and $u^*$ are the total number of points used to discretize the d
 \end{frame}
 
 \begin{frame}
-\frametitle{Kuramoto-Sivashinsky Equation}
+\frametitle{AR-DenseED Deterministic Predictions}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{Fig06.png}
@@ -532,19 +540,7 @@ where $N$, $u$ and $u^*$ are the total number of points used to discretize the d
 \end{frame}
 
 \begin{frame}
-\frametitle{Kuramoto-Sivashinsky Equation}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.7\textwidth]{Fig07.png}
-    \caption{The time-averaged spectral energy density of the simulated result using the spectral ETDRK4 scheme (target), AR-DenseED deterministic prediction and BAR-DenseED empirical mean and standard deviation calculated from $30$ posterior samples.
-    The averaged spectral energy density is the square of the modulus of the discrete Fourier transform over the domain, $x\in[0,22\pi]$, time-averaged between $t\in[0,500]$~\cite{brummitt2009search}.}
-    \label{fig:ks-esd}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{Kuramoto-Sivashinsky Equation}
+\frametitle{AR-DenseED Deterministic Predictions}
 
 \begin{table}[H]
     \caption{Wall-clock time for both spectral ETDRK4 scheme and AR-DenseED to simulate $5000$ time-steps of the Kuramoto-Sivashinsky system.
@@ -560,6 +556,22 @@ where $N$, $u$ and $u^*$ are the total number of points used to discretize the d
 \end{table}
 
 \end{frame}
+
+
+\subsection{BAR-DenseED Probabilistic Predictions}
+
+\begin{frame}
+\frametitle{BAR-DenseED Probabilistic Predictions}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{Fig07.png}
+    \caption{The time-averaged spectral energy density of the simulated result using the spectral ETDRK4 scheme (target), AR-DenseED deterministic prediction and BAR-DenseED empirical mean and standard deviation calculated from $30$ posterior samples.
+    The averaged spectral energy density is the square of the modulus of the discrete Fourier transform over the domain, $x\in[0,22\pi]$, time-averaged between $t\in[0,500]$~\cite{brummitt2009search}.}
+    \label{fig:ks-esd}
+\end{figure}
+\end{frame}
+
 
 \begin{frame}
 \frametitle{BAR-DenseED Probabilistic Predictions}
@@ -620,6 +632,8 @@ The remaining spatial gradients are discretized as follows:
 where the spatial gradients are approximated using second-order accurate approximations that are implemented efficiently using convolutional operators.
 \end{frame}
 
+\subsection{AR-DenseED Deterministic Predictions}
+
 \begin{frame}
 \frametitle{AR-DenseED Deterministic Predictions}
 \begin{figure}[H]
@@ -679,9 +693,10 @@ which instead captures the discrepancy of the total energy, $u^{2}/2$, within th
 \end{table}
 \end{frame}
 
+\subsection{BAR-DenseED Probabilistic Predictions}
 
 \begin{frame}
-\frametitle{1D Viscous Burgers' System}
+\frametitle{BAR-DenseED Probabilistic Predictions}
 %
 \begin{figure}[H]
     \centering
@@ -692,7 +707,7 @@ which instead captures the discrepancy of the total energy, $u^{2}/2$, within th
 \end{frame}
 
 \begin{frame}
-\frametitle{1D Viscous Burgers' System}
+\frametitle{BAR-DenseED Probabilistic Predictions}
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{Fig13.png}
@@ -703,7 +718,7 @@ which instead captures the discrepancy of the total energy, $u^{2}/2$, within th
 
 
 \begin{frame}
-\frametitle{1D Viscous Burgers' System}
+\frametitle{BAR-DenseED Probabilistic Predictions}
 
 \begin{figure}[H]
     \centering
@@ -717,7 +732,7 @@ which instead captures the discrepancy of the total energy, $u^{2}/2$, within th
 
 
 \begin{frame}
-\frametitle{1D Viscous Burgers' System}
+\frametitle{BAR-DenseED Probabilistic Predictions}
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{Fig15.png}
@@ -854,7 +869,7 @@ where,
 %
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Fig18.png}
+    \includegraphics[width=0.8\textwidth]{Fig18.png}
     \caption{AR-DenseED predictions of a 2D coupled Burgers' test case. (Top to bottom) $x$-velocity FEM target solution, $x$-velocity AR-DenseED prediction, $x$-velocity $L_1$ error, $y$-velocity FEM target solution, $y$-velocity AR-DenseED prediction and $y$-velocity $L_1$ error.}
     \label{fig:burgers1D-ARDenseED-1}
 \end{figure}
@@ -867,7 +882,7 @@ where,
 %
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{Fig19.png}
+    \includegraphics[width=0.8\textwidth]{Fig19.png}
     \caption{AR-DenseED predictions of a 2D coupled Burgers' test case. (Top to bottom) $x$-velocity FEM target solution, $x$-velocity AR-DenseED prediction, $x$-velocity $L_1$ error, $y$-velocity FEM target solution, $y$-velocity AR-DenseED prediction and $y$-velocity $L_1$ error.}
     \label{fig:burgers1D-ARDenseED-2}
 \end{figure}
